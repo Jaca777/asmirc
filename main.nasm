@@ -42,9 +42,9 @@ readString: ;(terminator: char on stack, destAddress: char* on rdi) => void
 
   readStringLoop:
     call readChar
-    mov word bx, [rdi]
+    mov byte bl, [rdi]
     inc rdi
-    cmp bx, word [rbp + 16]
+    cmp bl, byte [rbp + 16]
     jne readStringLoop
   exitReadStringLoop:
     mov word [rdi], 0x0
@@ -105,7 +105,7 @@ lengthOf: ;(string: char* on stack) => length: int in rax
 
     mov rbx, [rbp + 16]
   lengthLoop:
-    cmp [rbx], word 0
+    cmp [rbx], byte 0
     je exitLengthLoop
     inc rbx
     jmp lengthLoop
