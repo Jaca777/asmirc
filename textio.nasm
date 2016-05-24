@@ -23,7 +23,7 @@ readString: ;(terminator: char on stack, destAddress: char* on rdi) => void
 
     mov rsp, rbp
     pop rbp
-    ret
+    ret 2
 
 readChar: ;(dest: char* in rdi) => char in [rdi]
     mov rax, 3 ;read
@@ -48,6 +48,13 @@ print: ;(string: char* in rcx) => void
     pop rbp
     ret
 
+string2int: ;(string: char* in rax): => number: int in rbx
+push rbp
+mov rbp, rsp
+
+mov rsp, rbp
+pop rbp
+
 concat: ;(string: char* on stack, string2: char* on stack, dest: char* in rdi) => concatenatedString: string in [dest]
     push rbp
     mov rbp, rsp
@@ -68,7 +75,7 @@ concat: ;(string: char* on stack, string2: char* on stack, dest: char* in rdi) =
 
     mov rsp, rbp
     pop rbp
-    ret 8
+    ret 16
 
 lengthOf: ;(string: char* on stack) => length: int in rax
     push rbp
@@ -86,4 +93,4 @@ lengthOf: ;(string: char* on stack) => length: int in rax
 
     mov rsp, rbp
     pop rbp
-    ret
+    ret 8
