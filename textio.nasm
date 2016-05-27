@@ -5,6 +5,7 @@
     global print
     global concat
     global lengthOf
+    global string2int
 
 segment .text
 
@@ -48,12 +49,38 @@ print: ;(string: char* in rcx) => void
     pop rbp
     ret
 
-string2int: ;(string: char* in rax): => number: int in rbx
-push rbp
-mov rbp, rsp
+string2int: ;(string: char* in rsi): => number: int in rbx
+    push rbp
+    mov rbp, rsp
+    sub rsp, 4
 
-mov rsp, rbp
-pop rbp
+    push rsi
+    call lengthOf
+    mov rcx, rax
+    xor rbx, rbx ; result
+    mov [rsp], dword 1 ; power of 10
+  string2intLoop:
+    cmp rcx, 0
+    je exitString2intLoop
+    mov al, byte [rsi + rcx]
+    call char2int
+    mov rdx, [rsp]
+    mul rdx
+    add rbx, rdx
+    mov rax, 10
+    mul dword [rsp]
+    dec rcx
+    jmp string2intLoop
+  exitString2intLoop:
+
+    add rsp, 4
+    mov rsp, rbp
+    pop rbp
+    ret
+
+char2int: ; (digit: char in al) => int in al
+    sub al, 48
+    ret
 
 concat: ;(string: char* on stack, string2: char* on stack, dest: char* in rdi) => concatenatedString: string in [dest]
     push rbp

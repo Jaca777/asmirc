@@ -5,13 +5,14 @@
     extern readString
     extern print
     extern concat
+    extern string2int
 
 segment .data
     startMsg db " === Welcome to asmirc! === ", 0xA, "  = Enter your name: ", 0
     serverMsg db "  = Enter server name: ", 0
     portMsg db "  = Enter port: ", 0
     connectMsg db "  = Connecting to ", 0
-    nickTerminator db 0xA
+    inputTerminator db 0xA
 
 segment .bss
     nick: resb 32 ; 32 chars
@@ -23,17 +24,31 @@ segment .bss
 segment .text
 
 main:
-    mov rcx, startMsg
+    mov rcx, startMsg ; start msg
     call print
-    push word [nickTerminator]
+
+    push word [inputTerminator] ; reading nick
     mov rdi, nick
     call readString
-    mov rcx, serverMsg
+
+    mov rcx, serverMsg ; reading server
     call print
-    push word [nickTerminator]
+    push word [inputTerminator]
     mov rdi, server
     call readString
-    push server
+
+    sub rsp, 8 ; reading port
+    mov rcx, portMsg
+    call print
+    push word [inputTerminator]
+    mov rdi, rsp
+    call readString
+    mov rsi, rsp
+    call string2int
+    add rsp, 8
+    mov [port], rbx
+
+    push port
     push connectMsg
     mov rdi, connectMsgCon
     call concat
